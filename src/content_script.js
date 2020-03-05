@@ -491,6 +491,7 @@ function patternDetection(selectionArray, socialActionIntent){
       const itemUIDClassTarget = "js-" + itemUIDClassName;
       const socialAction = socialActionIntent;
       facebookDetectedElementsArr.push(itemUIDClassName);
+      // TODO: Add logic to gate drawing badges based on local storage (settings.badgeContent)
       addFacebookBadge(item, itemUIDClassTarget, socialAction);
       item.classList.add("fbc-has-badge");
       item.classList.add(itemUIDClassName);
