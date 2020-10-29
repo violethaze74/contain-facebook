@@ -61,6 +61,12 @@ async function updateSettings(data){
   }
 }
 
+async function checkSettings(setting){
+  console.log( DEFAULT_SETTINGS[setting] );
+  return "foo";
+  // return DEFAULT_SETTINGS[setting];
+}
+
 const MAC_ADDON_ID = "@testpilot-containers";
 
 let macAddonEnabled = false;
@@ -667,6 +673,8 @@ function setupWindowsAndTabsListeners() {
     case "update-settings":
       updateSettings(request.settings);
       break;
+    case "check-settings":
+      return checkSettings(request.settings);
     default:
       throw new Error("Unexpected message!");
     }
