@@ -593,7 +593,22 @@ browser.runtime.onMessage.addListener(message => {
 // let callCount = 0;
 let contentScriptDelay = 999;
 
-function contentScriptInit(resetSwitch, msg) {
+async function getUserSettings(setting) {
+  // Send request to background to parse URL via PSL
+  const localStorage = await browser.storage.local.get();
+
+  if (localStorage.settings) {
+    return localStorage.settings.badgeContent;
+  }
+
+  const backgroundResp = await browser.runtime.sendMessage({
+    message: "check-settings"
+  });
+
+  return backgroundResp;
+}
+
+async function contentScriptInit(resetSwitch, msg) {
   // Second arg is for debugging to see which contentScriptInit fires
   // Call count tracks number of times contentScriptInit has been called
   // callCount = callCount + 1;
@@ -603,11 +618,18 @@ function contentScriptInit(resetSwitch, msg) {
     contentScriptSetTimeout();
   }
 
+  // Check user settings
+  const showBadges = await getUserSettings("badgeContent");
+  if (!showBadges) {
+    checkForTrackers = false;
+  }
+
   // Resource call is not in FBC/FB Domain and is a FB resource
   if (checkForTrackers && msg !== "other-domain") {
     detectFacebookOnPage();
     screenUpdate();
   }
+
 }
 
 async function getRootDomainFromBackground(url) {
@@ -653,14 +675,5 @@ function contentScriptSetTimeout() {
     return false;
   }
   setTimeout(contentScriptSetTimeout, contentScriptDelay);
+
 }
-
-(function(){
-
-  const backgroundResp = await browser.runtime.sendMessage({
-    message: "check-settings",
-    settings: "badgeContent"
-  });
-
-
-})();

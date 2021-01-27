@@ -61,10 +61,9 @@ async function updateSettings(data){
   }
 }
 
-async function checkSettings(setting){
-  console.log( DEFAULT_SETTINGS[setting] );
-  return "foo";
-  // return DEFAULT_SETTINGS[setting];
+async function checkSettings(){
+  let fbcStorage = await browser.storage.local.get();
+  return fbcStorage.settings;
 }
 
 const MAC_ADDON_ID = "@testpilot-containers";
@@ -674,7 +673,7 @@ function setupWindowsAndTabsListeners() {
       updateSettings(request.settings);
       break;
     case "check-settings":
-      return checkSettings(request.settings);
+      return checkSettings();
     default:
       throw new Error("Unexpected message!");
     }
