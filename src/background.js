@@ -29,6 +29,7 @@ const INSTAGRAM_DOMAINS = [
 const DEFAULT_SETTINGS = {
   blockInstagram: true,
   badgeContent: true,
+  replaceTab: true,
 };
 
 async function buildBlockList() {
@@ -61,8 +62,13 @@ async function updateSettings(data){
   }
 }
 
-async function checkSettings(){
+async function checkSettings(setting){
   let fbcStorage = await browser.storage.local.get();
+
+  if (setting) {
+    return fbcStorage.settings[setting];
+  }
+
   return fbcStorage.settings;
 }
 
@@ -307,10 +313,16 @@ async function maybeReopenTab (url, tab, request) {
     url,
     cookieStoreId,
     active: tab.active,
-    index: tab.index,
+    index: tab.index + 1,
     windowId: tab.windowId
   });
-  browser.tabs.remove(tab.id);
+
+  const replaceTabSetting = await checkSettings("replaceTab");
+
+  // This is true by default
+  if (replaceTabSetting) {
+    browser.tabs.remove(tab.id);
+  }
 
   return {cancel: true};
 }
