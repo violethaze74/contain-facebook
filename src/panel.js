@@ -489,6 +489,7 @@ const addHeaderWithGearIcon = (fragment) => {
   return fragment;
 };
 
+// TODO: Remove instagram.com based on allowInstagram setting
 const defaultAllowedSites = [
   "instagram.com",
   "facebook.com",
