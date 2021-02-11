@@ -685,6 +685,8 @@ function setupWindowsAndTabsListeners() {
     case "update-settings":
       updateSettings(request.settings);
       break;
+    case "get-default-settings":
+      return DEFAULT_SETTINGS;
     case "check-settings":
       return checkSettings();
     default:
